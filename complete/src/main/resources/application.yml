@@ -1,2 +1,22 @@
 server:
   port: 9999
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: fsh-house
+          uri: http://localhost:8082
+          predicates:
+            - Path=/rmse-auditdata-oracle/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@apiKeyResolver}"
+  application:
+    name: gateway-limiter
+  redis:
+    host: 192.168.55.75
+    port: 6379
+    database: 0
